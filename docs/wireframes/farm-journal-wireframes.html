@@ -1,0 +1,548 @@
+<title>농사일지 — 화면 와이어프레임</title>
+<style>
+  :root{
+    --paper:#EDF1F5;
+    --paper-2:#E2E9F0;
+    --grid-line:#0f3a5f1f;
+    --ink:#1F3A5F;
+    --ink-soft:#5A7290;
+    --ink-faint:#93A6B8;
+    --border:#B9C6D2;
+    --frame-bg:#FFFFFF;
+    --accent-sow:#2F6FA8;
+    --accent-sow-ink:#1E5686;
+    --accent-harvest:#B1503B;
+    --accent-harvest-ink:#954031;
+    --accent-cost:#C08A2E;
+    --accent-cost-ink:#8F6519;
+    --font-mono: ui-monospace,"Cascadia Code","Consolas","SFMono-Regular",Menlo,monospace;
+    --font-kr:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#0E2A47; --paper-2:#123353; --grid-line:#7ec8ff1f;
+      --ink:#EAF2FB; --ink-soft:#B7CBE0; --ink-faint:#7C97B4; --border:#2C4A6E;
+      --frame-bg:#0B1E33;
+      --accent-sow:#7EC8FF; --accent-sow-ink:#BFE3FF;
+      --accent-harvest:#FF9376; --accent-harvest-ink:#FFC1AE;
+      --accent-cost:#FFD37E; --accent-cost-ink:#FFE3AC;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E2A47; --paper-2:#123353; --grid-line:#7ec8ff1f;
+    --ink:#EAF2FB; --ink-soft:#B7CBE0; --ink-faint:#7C97B4; --border:#2C4A6E;
+    --frame-bg:#0B1E33;
+    --accent-sow:#7EC8FF; --accent-sow-ink:#BFE3FF;
+    --accent-harvest:#FF9376; --accent-harvest-ink:#FFC1AE;
+    --accent-cost:#FFD37E; --accent-cost-ink:#FFE3AC;
+  }
+  :root[data-theme="light"]{
+    --paper:#EDF1F5; --paper-2:#E2E9F0; --grid-line:#0f3a5f1f;
+    --ink:#1F3A5F; --ink-soft:#5A7290; --ink-faint:#93A6B8; --border:#B9C6D2;
+    --frame-bg:#FFFFFF;
+    --accent-sow:#2F6FA8; --accent-sow-ink:#1E5686;
+    --accent-harvest:#B1503B; --accent-harvest-ink:#954031;
+    --accent-cost:#C08A2E; --accent-cost-ink:#8F6519;
+  }
+
+  *{ box-sizing:border-box; }
+  ::selection{ background:var(--accent-sow); color:var(--frame-bg); }
+  :focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+
+  body{ margin:0; }
+
+  .page{
+    font-family:var(--font-kr);
+    color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:22px 22px;
+    padding:2.5rem 1.25rem 4rem;
+  }
+
+  .wrap{ max-width:1080px; margin:0 auto; }
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    display:flex; flex-wrap:wrap; gap:1.5rem 2rem; justify-content:space-between; align-items:flex-end;
+    padding-bottom:1.25rem; margin-bottom:2.25rem;
+    border-bottom:2px solid var(--ink);
+  }
+  .masthead-main{ max-width:44ch; }
+  .eyebrow{
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:.12em;
+    color:var(--ink-soft); text-transform:uppercase; margin:0 0 .6rem;
+  }
+  .masthead h1{
+    font-size:clamp(1.5rem,3.2vw,2.15rem); line-height:1.25; margin:0 0 .5rem;
+    text-wrap:balance; letter-spacing:-.01em;
+  }
+  .masthead p{ margin:0; color:var(--ink-soft); font-size:0.95rem; line-height:1.6; }
+
+  .title-block{
+    font-family:var(--font-mono); font-size:0.72rem; font-variant-numeric:tabular-nums;
+    border:1px solid var(--border); border-radius:2px; min-width:230px;
+    background:var(--paper-2);
+  }
+  .title-block dl{ margin:0; display:grid; grid-template-columns:auto 1fr; }
+  .title-block dt{
+    padding:.4rem .6rem; color:var(--ink-soft); border-top:1px solid var(--border);
+    border-right:1px solid var(--border); white-space:nowrap;
+  }
+  .title-block dd{
+    margin:0; padding:.4rem .6rem; border-top:1px solid var(--border); color:var(--ink);
+  }
+  .title-block dt:first-child, .title-block dd:first-child{ border-top:none; }
+
+  /* ---------- screen sections ---------- */
+  .screen{ margin-bottom:3.5rem; }
+  .screen-head{ margin-bottom:1.25rem; }
+  .screen-head .eyebrow{ margin-bottom:.35rem; }
+  .screen-head h2{ font-size:1.25rem; margin:0 0 .3rem; letter-spacing:-.01em; }
+  .screen-head p{ margin:0; color:var(--ink-soft); font-size:0.9rem; max-width:62ch; line-height:1.6; }
+
+  .screen-body{
+    display:grid; grid-template-columns:minmax(0,1fr) minmax(240px,300px);
+    gap:2rem; align-items:start;
+  }
+  @media (max-width:760px){
+    .screen-body{ grid-template-columns:1fr; }
+  }
+
+  .device-row{ display:flex; flex-wrap:wrap; gap:1.75rem; align-items:flex-start; }
+  .device-col{ display:flex; flex-direction:column; align-items:center; gap:.6rem; max-width:100%; }
+  .device-caption{
+    font-family:var(--font-mono); font-size:0.68rem; color:var(--ink-faint);
+    letter-spacing:.06em; font-variant-numeric:tabular-nums;
+  }
+
+  /* ---------- legend ---------- */
+  .legend{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:.65rem; }
+  .legend li{ display:flex; gap:.55rem; font-size:0.85rem; line-height:1.55; color:var(--ink-soft); }
+  .legend b{ color:var(--ink); font-weight:600; }
+
+  .badge{
+    flex:none; display:inline-flex; align-items:center; justify-content:center;
+    width:1.3rem; height:1.3rem; border-radius:50%; border:1.5px solid var(--ink);
+    font-family:var(--font-mono); font-size:0.68rem; color:var(--ink); margin-top:.05rem;
+  }
+
+  /* ---------- phone frame ---------- */
+  .phone{
+    width:min(300px,80vw); background:var(--frame-bg); border:1px solid var(--border);
+    border-radius:22px; padding:10px 10px 16px; box-shadow:0 1px 0 var(--border) inset;
+    position:relative;
+  }
+  .phone-notch{
+    width:70px; height:5px; border-radius:3px; background:var(--border); margin:0 auto 8px;
+  }
+  .phone-screen{
+    border:1px solid var(--border); border-radius:10px; min-height:420px;
+    display:flex; flex-direction:column; overflow:hidden; position:relative;
+    background:var(--paper-2);
+  }
+
+  /* ---------- browser frame ---------- */
+  .browser{
+    width:min(520px,90vw); background:var(--frame-bg); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden;
+  }
+  .browser-bar{
+    display:flex; align-items:center; gap:.4rem; padding:.5rem .7rem;
+    border-bottom:1px solid var(--border); background:var(--paper-2);
+  }
+  .browser-dot{ width:8px; height:8px; border-radius:50%; border:1px solid var(--ink-faint); }
+  .browser-addr{
+    flex:1; margin-left:.5rem; font-family:var(--font-mono); font-size:0.68rem;
+    color:var(--ink-faint); background:var(--frame-bg); border:1px solid var(--border);
+    border-radius:4px; padding:.2rem .5rem;
+  }
+  .browser-screen{ min-height:420px; display:flex; flex-direction:column; }
+
+  /* ---------- generic app chrome inside frames ---------- */
+  .app-topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:.65rem .8rem; border-bottom:1px solid var(--border); font-size:0.82rem;
+  }
+  .app-topbar .nav{ color:var(--ink-faint); font-family:var(--font-mono); font-size:0.75rem; }
+  .app-body{ flex:1; padding:.8rem; display:flex; flex-direction:column; gap:.7rem; overflow:auto; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:.4rem; }
+  .chip{
+    font-size:0.72rem; padding:.28rem .6rem; border-radius:999px; border:1px solid var(--border);
+    color:var(--ink-soft); background:var(--frame-bg);
+  }
+  .chip.selected{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+  .field-label{
+    font-family:var(--font-mono); font-size:0.66rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+
+  .diary-line{
+    display:flex; align-items:baseline; gap:.4rem; font-size:0.84rem; padding:.15rem 0;
+    border-bottom:1px dashed var(--border);
+  }
+  .diary-line .dot{ color:var(--ink-faint); }
+  .diary-line .txt{ flex:1; }
+  .tag{
+    font-family:var(--font-mono); font-size:0.62rem; padding:.1rem .4rem; border-radius:4px;
+    border:1px solid currentColor; white-space:nowrap;
+  }
+  .tag.sow{ color:var(--accent-sow-ink); background:color-mix(in srgb, var(--accent-sow) 16%, transparent); }
+  .tag.harvest{ color:var(--accent-harvest-ink); background:color-mix(in srgb, var(--accent-harvest) 16%, transparent); }
+
+  .ghost-row{
+    font-size:0.8rem; color:var(--ink-faint); padding:.3rem 0; border-bottom:1px dashed var(--border);
+  }
+
+  .fake-btn{
+    font-family:var(--font-kr); font-size:0.78rem; text-align:left; cursor:default;
+    padding:.5rem .65rem; border-radius:6px; border:1px dashed var(--border);
+    background:transparent; color:var(--ink-soft); width:100%;
+  }
+  .fake-btn.primary{
+    margin-top:auto; text-align:center; border:1px solid var(--ink); background:var(--ink);
+    color:var(--paper); font-weight:600; border-radius:8px; padding:.6rem;
+  }
+
+  /* calendar */
+  .cal-nav{ display:flex; align-items:center; justify-content:center; gap:1rem; padding:.6rem 0; font-size:0.85rem; }
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:2px; padding:.4rem; flex:1; }
+  .cal-dow{ font-family:var(--font-mono); font-size:0.62rem; color:var(--ink-faint); text-align:center; padding:.25rem 0; }
+  .cal-cell{
+    min-height:40px; border-radius:4px; padding:.2rem .25rem; font-size:0.6rem;
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .cal-cell .d{ font-family:var(--font-mono); color:var(--ink-faint); font-variant-numeric:tabular-nums; }
+  .cal-cell.filled{ background:var(--paper-2); }
+  .cal-cell.filled .d{ color:var(--ink); }
+  .cal-cell.mobile-mini{ min-height:34px; align-items:flex-start; }
+  .dots{ display:flex; gap:2px; }
+  .dots span{ width:5px; height:5px; border-radius:50%; }
+  .dots .sow{ background:var(--accent-sow); }
+  .dots .harvest{ background:var(--accent-harvest); }
+  .dots .cost{ background:var(--accent-cost); }
+  .dots .plain{ background:var(--ink-faint); }
+  .cal-preview{ color:var(--ink-soft); line-height:1.3; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .cal-more{ color:var(--ink-faint); }
+
+  .sheet-peek{
+    position:absolute; left:8px; right:8px; bottom:8px; background:var(--frame-bg);
+    border:1px solid var(--border); border-radius:12px 12px 0 0; padding:.5rem .7rem .6rem;
+    box-shadow:0 -2px 8px rgba(0,0,0,.06); font-size:0.68rem; color:var(--ink-soft);
+  }
+  .sheet-peek .handle{ width:32px; height:3px; border-radius:2px; background:var(--border); margin:0 auto .4rem; }
+
+  /* detail panel (desktop) */
+  .detail-panel{
+    position:absolute; top:0; right:0; bottom:0; width:52%; background:var(--frame-bg);
+    border-left:1px solid var(--border); padding:.75rem; display:flex; flex-direction:column; gap:.6rem;
+  }
+  .detail-panel .close{ align-self:flex-end; font-family:var(--font-mono); color:var(--ink-faint); font-size:0.8rem; }
+  .detail-head{ font-size:0.85rem; font-weight:600; }
+  .detail-sub{ font-size:0.72rem; color:var(--ink-faint); }
+  .detail-section-label{ font-family:var(--font-mono); font-size:0.62rem; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin-top:.3rem; }
+
+  /* bottom sheet (mobile) */
+  .bottom-sheet{
+    position:absolute; left:0; right:0; bottom:0; background:var(--frame-bg);
+    border:1px solid var(--border); border-radius:14px 14px 0 0; padding:.7rem .8rem;
+    display:flex; flex-direction:column; gap:.5rem; box-shadow:0 -4px 14px rgba(0,0,0,.08);
+  }
+
+  /* search / list screen */
+  .search-bar{
+    display:flex; align-items:center; gap:.4rem; border:1px solid var(--border); border-radius:8px;
+    padding:.4rem .6rem; font-size:0.78rem; color:var(--ink-faint);
+  }
+  .list-row{
+    display:flex; flex-wrap:wrap; gap:.3rem .6rem; align-items:baseline; font-size:0.8rem;
+    padding:.45rem 0; border-bottom:1px dashed var(--border);
+  }
+  .list-row .date{ font-family:var(--font-mono); color:var(--ink-faint); font-variant-numeric:tabular-nums; width:5.2em; }
+  .list-row .txt{ flex:1; min-width:120px; }
+  .list-row .tagdot{ display:inline-flex; align-items:center; gap:.3rem; font-size:0.68rem; color:var(--ink-soft); }
+  .list-row .tagdot span{ width:6px; height:6px; border-radius:50%; }
+
+  .sheet-footer{
+    margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--border);
+    font-family:var(--font-mono); font-size:0.72rem; color:var(--ink-faint);
+  }
+</style>
+
+<div class="page">
+  <div class="wrap">
+
+    <header class="masthead">
+      <div class="masthead-main">
+        <p class="eyebrow">Farm Journal — MVP Wireframe Set</p>
+        <h1>농사일지 화면 와이어프레임</h1>
+        <p>일기처럼 쓰고, 파종·수확만 가볍게 표시하고, 비용은 필요할 때만 — 4개 화면 스케치</p>
+      </div>
+      <div class="title-block">
+        <dl>
+          <dt>PROJECT</dt><dd>농사일지 (Farm Journal)</dd>
+          <dt>SHEET</dt><dd>1 / 1</dd>
+          <dt>DATE</dt><dd>2026-07-10</dd>
+          <dt>REV</dt><dd>v0.1 · MVP</dd>
+          <dt>SCALE</dt><dd>NTS</dd>
+        </dl>
+      </div>
+    </header>
+
+    <!-- SCREEN 01 -->
+    <section class="screen" id="screen-01">
+      <div class="screen-head">
+        <p class="eyebrow">Screen 01 / 04 · Mobile</p>
+        <h2>오늘 기록 작성</h2>
+        <p>날씨만 가볍게 고르고, 그 아래는 줄글로 쓴다. 유형·작물·밭 같은 필드는 없음 — 필요하면 문장 끝에 태그만 톡 붙인다.</p>
+      </div>
+      <div class="screen-body">
+        <div class="device-row">
+          <div class="device-col">
+            <div class="phone">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="app-topbar">
+                  <span class="nav">‹ 오늘</span>
+                  <span>2026.07.10 (금)</span>
+                  <span class="nav">저장</span>
+                </div>
+                <div class="app-body">
+                  <div class="chip-row" aria-label="날씨 선택">
+                    <span class="chip selected">맑음</span>
+                    <span class="chip">흐림</span>
+                    <span class="chip">비</span>
+                    <span class="chip">눈</span>
+                  </div>
+                  <div class="field-label">오늘 기록</div>
+                  <div>
+                    <div class="diary-line"><span class="dot">·</span><span class="txt">블루베리밭 풀매기</span></div>
+                    <div class="diary-line">
+                      <span class="dot">·</span><span class="txt">들깨 모종 정식 (열밭)</span>
+                      <span class="tag sow">파종</span><span class="badge">1</span>
+                    </div>
+                    <div class="diary-line">
+                      <span class="dot">·</span><span class="txt">블루베리 1.5kg 따기</span>
+                      <span class="tag harvest">수확</span><span class="badge">2</span>
+                    </div>
+                    <div class="ghost-row">+ 줄 추가</div>
+                  </div>
+                  <button type="button" class="fake-btn">+ 비용 추가<span class="badge" style="float:right">3</span></button>
+                  <button type="button" class="fake-btn">+ 특이사항 / 비고<span class="badge" style="float:right">4</span></button>
+                  <button type="button" class="fake-btn primary">저장</button>
+                </div>
+              </div>
+            </div>
+            <div class="device-caption">MOBILE — 375×812</div>
+          </div>
+        </div>
+        <ul class="legend">
+          <li><span class="badge">1</span><span><b>파종 태그</b>는 드롭다운이 아니라 문장 끝에 탭 한 번으로 붙인다. 수량·위치는 그냥 문장 안에 이어 쓴다.</span></li>
+          <li><span class="badge">2</span><span><b>수확 태그</b>도 동일한 방식. "1.5kg" 같은 수확량은 별도 필드가 아니라 문장 그대로.</span></li>
+          <li><span class="badge">3</span><span><b>비용</b>은 평소엔 안 보이다가 버튼을 눌러야 내용·금액 입력칸이 펼쳐진다 — 매번 강제 아님.</span></li>
+          <li><span class="badge">4</span><span><b>특이사항/비고</b>는 선거일·서류처리 등 농사와 무관한 메모를 담는 별도 칸.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SCREEN 02 -->
+    <section class="screen" id="screen-02">
+      <div class="screen-head">
+        <p class="eyebrow">Screen 02 / 04 · Responsive</p>
+        <h2>달력 뷰</h2>
+        <p>기록 없는 날은 완전히 비워둔다. 데스크톱은 그날의 텍스트를 미리 보여주고, 모바일은 점만 찍어 두었다가 탭하면 하단시트로 상세를 연다.</p>
+      </div>
+      <div class="screen-body">
+        <div class="device-row">
+          <div class="device-col">
+            <div class="browser">
+              <div class="browser-bar">
+                <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+                <span class="browser-addr">farmjournal.app/calendar</span>
+              </div>
+              <div class="browser-screen">
+                <div class="cal-nav">‹&nbsp;&nbsp;<b>2026년 7월</b>&nbsp;&nbsp;›</div>
+                <div class="cal-grid">
+                  <div class="cal-dow">일</div><div class="cal-dow">월</div><div class="cal-dow">화</div><div class="cal-dow">수</div><div class="cal-dow">목</div><div class="cal-dow">금</div><div class="cal-dow">토</div>
+                  <div class="cal-cell"><span class="d">28</span></div><div class="cal-cell"><span class="d">29</span></div><div class="cal-cell"><span class="d">30</span></div><div class="cal-cell"><span class="d">1</span></div><div class="cal-cell"><span class="d">2</span></div><div class="cal-cell"><span class="d">3</span></div><div class="cal-cell"><span class="d">4</span></div>
+                  <div class="cal-cell"><span class="d">5</span></div><div class="cal-cell"><span class="d">6</span></div><div class="cal-cell"><span class="d">7</span></div><div class="cal-cell"><span class="d">8</span></div><div class="cal-cell"><span class="d">9</span></div><div class="cal-cell"><span class="d">10</span></div><div class="cal-cell"><span class="d">11</span></div>
+                  <div class="cal-cell"><span class="d">12</span></div><div class="cal-cell"><span class="d">13</span></div><div class="cal-cell"><span class="d">14</span></div><div class="cal-cell"><span class="d">15</span></div>
+                  <div class="cal-cell filled">
+                    <span class="d">16</span>
+                    <span class="dots"><span class="sow"></span><span class="harvest"></span></span>
+                    <span class="cal-preview">뒷밭 풀매기, 들깨모종 심기 외</span>
+                    <span class="cal-more">+2개</span>
+                  </div>
+                  <div class="cal-cell"><span class="d">17</span></div>
+                  <div class="cal-cell filled">
+                    <span class="d">18</span>
+                    <span class="dots"><span class="harvest"></span></span>
+                    <span class="cal-preview">블루베리 따기, 1.5kg</span>
+                  </div>
+                  <div class="cal-cell"><span class="d">19</span></div><div class="cal-cell"><span class="d">20</span></div><div class="cal-cell"><span class="d">21</span></div><div class="cal-cell"><span class="d">22</span></div><div class="cal-cell"><span class="d">23</span></div><div class="cal-cell"><span class="d">24</span></div><div class="cal-cell"><span class="d">25</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="device-caption">DESKTOP — 텍스트 미리보기</div>
+          </div>
+          <div class="device-col">
+            <div class="phone">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="cal-nav">‹&nbsp;&nbsp;<b>7월</b>&nbsp;&nbsp;›</div>
+                <div class="cal-grid">
+                  <div class="cal-dow">일</div><div class="cal-dow">월</div><div class="cal-dow">화</div><div class="cal-dow">수</div><div class="cal-dow">목</div><div class="cal-dow">금</div><div class="cal-dow">토</div>
+                  <div class="cal-cell mobile-mini"><span class="d">28</span></div><div class="cal-cell mobile-mini"><span class="d">29</span></div><div class="cal-cell mobile-mini"><span class="d">30</span></div><div class="cal-cell mobile-mini"><span class="d">1</span></div>
+                  <div class="cal-cell mobile-mini filled"><span class="d">2</span><span class="dots"><span class="cost"></span></span></div>
+                  <div class="cal-cell mobile-mini"><span class="d">3</span></div><div class="cal-cell mobile-mini"><span class="d">4</span></div>
+                  <div class="cal-cell mobile-mini"><span class="d">5</span></div><div class="cal-cell mobile-mini"><span class="d">6</span></div><div class="cal-cell mobile-mini"><span class="d">7</span></div>
+                  <div class="cal-cell mobile-mini filled"><span class="d">8</span><span class="dots"><span class="sow"></span></span></div>
+                  <div class="cal-cell mobile-mini filled"><span class="d">9</span><span class="dots"><span class="plain"></span></span></div>
+                  <div class="cal-cell mobile-mini"><span class="d">10</span></div><div class="cal-cell mobile-mini"><span class="d">11</span></div>
+                  <div class="cal-cell mobile-mini"><span class="d">12</span></div><div class="cal-cell mobile-mini"><span class="d">13</span></div><div class="cal-cell mobile-mini"><span class="d">14</span></div><div class="cal-cell mobile-mini"><span class="d">15</span></div>
+                  <div class="cal-cell mobile-mini filled" style="outline:1.5px solid var(--ink);"><span class="d">16</span><span class="dots"><span class="sow"></span><span class="harvest"></span></span></div>
+                  <div class="cal-cell mobile-mini"><span class="d">17</span></div>
+                  <div class="cal-cell mobile-mini filled"><span class="d">18</span><span class="dots"><span class="harvest"></span></span></div>
+                </div>
+                <div class="sheet-peek">
+                  <div class="handle"></div>
+                  16일 상세 ↑
+                </div>
+              </div>
+            </div>
+            <div class="device-caption">MOBILE — 점만 표시, 탭하면 하단시트</div>
+          </div>
+        </div>
+        <ul class="legend">
+          <li><span class="badge">1</span><span>빈 날은 두 화면 모두 <b>완전히 비워둠</b> — 격자만 존재.</span></li>
+          <li><span class="badge">2</span><span>점 색상 의미: <b style="color:var(--accent-sow-ink)">파랑=파종</b>, <b style="color:var(--accent-harvest-ink)">빨강=수확</b>, <b style="color:var(--accent-cost-ink)">황=비용</b>, 회색=일반 기록.</span></li>
+          <li><span class="badge">3</span><span>모바일에서 날짜를 <b>탭</b>하면 화면 하단에서 시트가 올라와 그날 전체 내용을 보여줌.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SCREEN 03 -->
+    <section class="screen" id="screen-03">
+      <div class="screen-head">
+        <p class="eyebrow">Screen 03 / 04 · Responsive</p>
+        <h2>날짜 상세보기</h2>
+        <p>같은 내용을 데스크톱은 우측 패널로, 모바일은 하단시트로 보여준다 — 작업 기록, 비용, 비고 순서.</p>
+      </div>
+      <div class="screen-body">
+        <div class="device-row">
+          <div class="device-col">
+            <div class="browser">
+              <div class="browser-bar">
+                <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+                <span class="browser-addr">farmjournal.app/calendar/2026-07-16</span>
+              </div>
+              <div class="browser-screen" style="position:relative;">
+                <div class="detail-panel">
+                  <span class="close">✕ 닫기</span>
+                  <div class="detail-head">7월 16일 (목) · 맑음</div>
+                  <div class="detail-section-label">작업 기록</div>
+                  <div class="diary-line"><span class="dot">·</span><span class="txt">뒷밭 풀매기</span></div>
+                  <div class="diary-line"><span class="dot">·</span><span class="txt">들깨 모종 심기</span><span class="tag sow">파종</span></div>
+                  <div class="diary-line"><span class="dot">·</span><span class="txt">수박모종 4포기, 상추모종 12포기</span><span class="tag sow">파종</span></div>
+                  <div class="diary-line"><span class="dot">·</span><span class="txt">잔디밭 물주기</span></div>
+                  <div class="detail-section-label">비용</div>
+                  <div class="detail-sub">이 날은 기록된 비용 없음</div>
+                  <div class="detail-section-label">비고</div>
+                  <div class="detail-sub">없음</div>
+                </div>
+              </div>
+            </div>
+            <div class="device-caption">DESKTOP — 우측 상세 패널</div>
+          </div>
+          <div class="device-col">
+            <div class="phone">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="bottom-sheet">
+                  <div class="handle"></div>
+                  <div class="detail-head">7월 18일 (금) · 맑음</div>
+                  <div class="detail-section-label">작업 기록</div>
+                  <div class="diary-line"><span class="dot">·</span><span class="txt">열밭 들깨 땜방</span></div>
+                  <div class="diary-line"><span class="dot">·</span><span class="txt">뒷밭 주변 풀베기</span></div>
+                  <div class="diary-line"><span class="dot">·</span><span class="txt">블루베리 1.5kg 따기</span><span class="tag harvest">수확</span></div>
+                  <div class="detail-section-label">비고</div>
+                  <div class="detail-sub">없음</div>
+                </div>
+              </div>
+            </div>
+            <div class="device-caption">MOBILE — 하단 시트</div>
+          </div>
+        </div>
+        <ul class="legend">
+          <li><span class="badge">1</span><span>구조는 동일: <b>작업 기록 → 비용 → 비고</b> 순서로 고정.</span></li>
+          <li><span class="badge">2</span><span>비용·비고가 없는 날은 "없음"으로 표시하거나 섹션 자체를 생략 — 추후 결정.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SCREEN 04 -->
+    <section class="screen" id="screen-04">
+      <div class="screen-head">
+        <p class="eyebrow">Screen 04 / 04 · Mobile</p>
+        <h2>목록 / 검색</h2>
+        <p>전체 텍스트 검색과 파종·수확·비용 필터만 제공. 날짜순 목록으로 훑어본다.</p>
+      </div>
+      <div class="screen-body">
+        <div class="device-row">
+          <div class="device-col">
+            <div class="phone">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="app-topbar"><span class="nav">‹ 목록</span></div>
+                <div class="app-body">
+                  <div class="search-bar">🔍 검색어를 입력하세요</div>
+                  <div class="chip-row">
+                    <span class="chip selected">전체</span>
+                    <span class="chip">파종</span>
+                    <span class="chip">수확</span>
+                    <span class="chip">비용</span>
+                  </div>
+                  <div>
+                    <div class="list-row">
+                      <span class="date">07.18 (금)</span>
+                      <span class="txt">블루베리 따기, 1.5kg</span>
+                      <span class="tagdot"><span style="background:var(--accent-harvest)"></span>수확</span>
+                    </div>
+                    <div class="list-row">
+                      <span class="date">07.16 (목)</span>
+                      <span class="txt">들깨모종 심기, 수박모종 4</span>
+                      <span class="tagdot"><span style="background:var(--accent-sow)"></span>파종</span>
+                    </div>
+                    <div class="list-row">
+                      <span class="date">07.09 (목)</span>
+                      <span class="txt">열밭 물주기</span>
+                    </div>
+                    <div class="list-row">
+                      <span class="date">07.02 (목)</span>
+                      <span class="txt">엔진 예초기 수리</span>
+                      <span class="tagdot"><span style="background:var(--accent-cost)"></span>15,000원</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="device-caption">MOBILE — 375×812</div>
+          </div>
+        </div>
+        <ul class="legend">
+          <li><span class="badge">1</span><span>필터는 딱 4개뿐 — <b>전체 / 파종 / 수확 / 비용</b>. 작물·밭 필터는 MVP에서 제외.</span></li>
+          <li><span class="badge">2</span><span>검색은 문장 전체를 대상으로 하므로 작물명·밭 이름을 몰라도 키워드로 찾을 수 있음.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="sheet-footer">
+      ※ 실제 개발 전 화면 구조 스케치 — 색상·간격·상세 인터랙션은 추후 조정. 데이터는 예시입니다.
+    </footer>
+
+  </div>
+</div>
