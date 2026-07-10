@@ -34,12 +34,15 @@
 
 ## Phase 2 — 오늘 기록 작성 화면 (MVP 핵심)
 
-- [ ] 날짜(기본 오늘) / 날씨 칩 선택 UI
-- [ ] 작업 내용 줄 단위 자유 입력 UI (엔터로 줄 추가)
-- [ ] 줄 단위 "파종/수확" 태그 토글 UI
-- [ ] "+ 비용 추가" 접이식 입력 UI
-- [ ] "+ 특이사항/비고" 입력 UI
-- [ ] 저장 로직 연결 (Supabase insert/update)
+- [x] 날짜(기본 오늘, KST 기준) / 날씨 칩 선택 UI
+- [x] 작업 내용 줄 단위 자유 입력 UI (Enter로 줄 추가, 빈 줄에서 Backspace로 줄 삭제)
+- [x] 줄 단위 "파종/수확" 태그 토글 UI
+- [x] "+ 비용 추가" 접이식 입력 UI
+- [x] "+ 특이사항/비고" 입력 UI
+- [x] 저장 로직 연결 (`app/entry/actions.ts` — entries upsert + work_items/expenses 재작성)
+- [x] Playwright로 실제 로그인 → 작성 → 저장 → 새로고침 후 데이터 유지까지 e2e 검증 완료 (콘솔 에러 없음)
+
+구현: `app/entry/page.tsx`(서버, 기존 데이터 로드) + `app/entry/entry-form.tsx`(클라이언트) + `app/entry/actions.ts`(서버 액션). 홈(`/`)에는 "오늘 기록 쓰기" 링크 추가.
 
 ## Phase 3 — 달력 뷰
 
