@@ -19,11 +19,18 @@
 
 ## Phase 1 — 데이터 모델 & DB
 
-- [ ] `entries`(일지: 날짜, 날씨, 비고) 테이블 설계
-- [ ] `work_items`(작업 기록: entry_id, 내용, 태그[파종/수확/없음]) 테이블 설계
-- [ ] `expenses`(비용 기록: entry_id, 내용, 금액) 테이블 설계
-- [ ] 마이그레이션 파일 작성 및 적용
-- [ ] 개인용 1계정 로그인만 우선 적용 (다중 사용자/공개는 후순위)
+- [x] `entries`(일지: 날짜, 날씨, 비고) 테이블 설계
+- [x] `work_items`(작업 기록: entry_id, 내용, 태그[파종/수확/없음]) 테이블 설계
+- [x] `expenses`(비용 기록: entry_id, 내용, 금액) 테이블 설계
+- [x] 마이그레이션 파일 작성 (`supabase/migrations/20260711013000_init_schema.sql`, RLS 포함)
+- [ ] 마이그레이션 적용 — **사용자 액션 필요** (아래 참고)
+- [x] 개인용 1계정 로그인 인프라 적용 (Supabase 매직 링크: `app/login`, `app/auth/callback`, `proxy.ts` 세션 검사)
+
+### 남은 사용자 액션
+
+1. **마이그레이션 적용**: Supabase 대시보드 → SQL Editor → `supabase/migrations/20260711013000_init_schema.sql` 내용을 붙여넣고 Run.
+   (또는 `supabase login` 후 `supabase link --project-ref uryrechhojujgjdtjeoj` → `supabase db push`.)
+2. 적용 후 `/login`에서 본인 이메일로 매직 링크를 받아 첫 로그인 — 이 계정이 앞으로의 유일한 데이터 소유자(`user_id`)가 됩니다.
 
 ## Phase 2 — 오늘 기록 작성 화면 (MVP 핵심)
 
