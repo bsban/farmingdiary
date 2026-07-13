@@ -39,7 +39,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={status === "sending"}
-            className="rounded bg-black px-3 py-2 text-white disabled:opacity-50"
+            className="rounded bg-primary-600 px-3 py-2 text-white hover:bg-primary-700 disabled:opacity-50"
           >
             {status === "sending" ? "전송 중..." : "로그인 링크 받기"}
           </button>

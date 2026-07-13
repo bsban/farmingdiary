@@ -87,5 +87,5 @@ export async function saveEntry(input: SaveEntryInput) {
   revalidatePath("/entry");
   revalidatePath("/");
 
-  return { ok: true as const };
+  return { ok: true as const, entryId: entry.id as string };
 }

@@ -44,6 +44,21 @@
 
 구현: `app/entry/page.tsx`(서버, 기존 데이터 로드) + `app/entry/entry-form.tsx`(클라이언트) + `app/entry/actions.ts`(서버 액션). 홈(`/`)에는 "오늘 기록 쓰기" 링크 추가.
 
+## Phase 2.5 — 디자인 개선 & 과거 기록/사진 (Phase 3 이전 보완)
+
+- [x] 디자인 가이드 문서 (`docs/design-guide.md`) — 블루 팔레트, Noto Sans KR, 아이콘 매핑
+- [x] `globals.css`/`layout.tsx`에 블루 톤 토큰 적용, Noto Sans KR 폰트 적용 (다크모드는 제거하고 단일 라이트 테마로 단순화)
+- [x] 날씨(맑음/흐림/비/눈), 파종/수확 태그를 lucide-react 아이콘 + 짧은 텍스트로 교체
+- [x] 과거 날짜 기록: 상단에 이전/다음 날 이동 버튼 + 날짜 선택 입력 추가 (`/entry?date=YYYY-MM-DD`)
+- [x] 사진 업로드: `photos` 테이블 + `entry-photos` storage 버킷 + RLS 마이그레이션 작성 (`supabase/migrations/20260713010000_add_photos.sql`)
+- [x] 사진 업로드 UI (여러 장 선택 업로드, 썸네일 그리드, 삭제) — 파일 선택 시 entry가 없으면 자동 생성 후 즉시 업로드
+- [x] Playwright로 날씨/태그 아이콘, 날짜 이동(이전날 버튼 + 날짜 입력 직접 지정), 저장까지 재검증 완료
+- [ ] 사진 업로드 e2e 검증 — **마이그레이션 적용 후 재확인 필요** (아래 참고)
+
+### 남은 사용자 액션
+
+1. Supabase 대시보드 → SQL Editor에서 `supabase/migrations/20260713010000_add_photos.sql` 실행 (photos 테이블 + entry-photos 버킷 + RLS 생성).
+
 ## Phase 3 — 달력 뷰
 
 - [ ] 월 단위 데이터 조회 쿼리
