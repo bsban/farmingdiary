@@ -7,8 +7,10 @@ import {
   type ChangeEvent,
   type KeyboardEvent,
 } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  CalendarDays,
   ChevronLeft,
   ChevronRight,
   Cloud,
@@ -255,7 +257,14 @@ export function EntryForm({
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 p-4">
+    <main className="flex w-full flex-1 flex-col gap-5">
+      <Link
+        href={`/?week=${date}`}
+        className="flex w-fit items-center gap-1 text-sm text-neutral-500 hover:text-neutral-700"
+      >
+        <CalendarDays size={16} /> 달력으로
+      </Link>
+
       <header className="flex items-center justify-between gap-2">
         <button
           type="button"

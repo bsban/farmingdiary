@@ -10,7 +10,13 @@ interface Todo {
   done: boolean;
 }
 
-export function TodoList({ initialTodos }: { initialTodos: Todo[] }) {
+export function TodoList({
+  initialTodos,
+  className = "",
+}: {
+  initialTodos: Todo[];
+  className?: string;
+}) {
   const [todos, setTodos] = useState(initialTodos);
   const [text, setText] = useState("");
   const [, startTransition] = useTransition();
@@ -49,7 +55,7 @@ export function TodoList({ initialTodos }: { initialTodos: Todo[] }) {
   }
 
   return (
-    <aside className="flex w-full flex-col gap-2 md:w-56 md:shrink-0">
+    <aside className={`flex w-full flex-col gap-2 md:w-56 md:shrink-0 ${className}`}>
       <p className="text-xs uppercase tracking-wide text-neutral-400">할일</p>
       <form onSubmit={handleAdd} className="flex gap-1">
         <input

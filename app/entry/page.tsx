@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { todayKST } from "@/lib/dates";
+import { TodoList } from "../todo-list";
 import { EntryForm } from "./entry-form";
 import type { Tag, WeatherValue } from "./actions";
 
@@ -46,15 +47,30 @@ export default async function EntryPage({
     }),
   );
 
+  const { data: todos } = await supabase
+    .from("todos")
+    .select("id, content, done")
+    .order("created_at", { ascending: true });
+
   return (
-    <EntryForm
-      date={targetDate}
-      initialEntryId={(entry?.id as string) ?? null}
-      initialWeather={(entry?.weather as WeatherValue) ?? null}
-      initialNote={(entry?.note as string) ?? ""}
-      initialLines={initialLines}
-      initialExpenses={initialExpenses}
-      initialPhotos={initialPhotos}
-    />
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 p-4 md:flex-row md:items-start">
+      <EntryForm
+        date={targetDate}
+        initialEntryId={(entry?.id as string) ?? null}
+        initialWeather={(entry?.weather as WeatherValue) ?? null}
+        initialNote={(entry?.note as string) ?? ""}
+        initialLines={initialLines}
+        initialExpenses={initialExpenses}
+        initialPhotos={initialPhotos}
+      />
+      <TodoList
+        className="md:order-first"
+        initialTodos={(todos ?? []).map((t) => ({
+          id: t.id as string,
+          content: t.content as string,
+          done: t.done as boolean,
+        }))}
+      />
+    </div>
   );
 }
