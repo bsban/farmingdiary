@@ -77,6 +77,20 @@
 
 - [x] Phase 2 "오늘 기록 작성" 화면(`/entry?date=...`)이 상세보기 + 편집을 겸함 — 별도 UI 불필요 (위 Phase 3 설명 참고)
 
+## Phase 4.5 — 할일 목록 (사이드바)
+
+- [x] `todos` 테이블 + RLS 마이그레이션 작성 (`supabase/migrations/20260714000000_add_todos.sql`)
+- [x] 서버 액션: 추가/완료토글/삭제 (`app/todo-actions.ts`)
+- [x] 사이드바 UI (`app/todo-list.tsx`) — 데스크톱은 달력 왼쪽, 모바일은 달력 위쪽
+- [x] 낙관적 업데이트(즉시 반영) + 실패 시 롤백
+- [ ] 마이그레이션 적용 후 추가/완료/삭제 e2e 재검증 — **사용자 액션 필요** (아래 참고)
+
+### 남은 사용자 액션
+
+1. Supabase 대시보드 → SQL Editor에서 아래 두 마이그레이션을 순서대로 실행:
+   - `supabase/migrations/20260713010000_add_photos.sql` (사진)
+   - `supabase/migrations/20260714000000_add_todos.sql` (할일)
+
 ## Phase 5 — 목록 / 검색
 
 - [ ] 전체 텍스트 키워드 검색 쿼리

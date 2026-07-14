@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Sprout, Wheat, Receipt } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { TodoList } from "./todo-list";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -71,6 +72,11 @@ export default async function CalendarPage({
     .gte("entry_date", rangeStart)
     .lte("entry_date", rangeEnd);
 
+  const { data: todos } = await supabase
+    .from("todos")
+    .select("id, content, done")
+    .order("created_at", { ascending: true });
+
   const byDate = new Map<
     string,
     { weather: string | null; note: string | null; items: WorkItem[]; expenses: Expense[] }
@@ -97,7 +103,15 @@ export default async function CalendarPage({
   const nextWeek = toISODate(addDays(weekStartMs, 7));
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-4">
+    <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 p-4 md:flex-row md:items-start">
+      <TodoList
+        initialTodos={(todos ?? []).map((t) => ({
+          id: t.id as string,
+          content: t.content as string,
+          done: t.done as boolean,
+        }))}
+      />
+      <main className="flex flex-1 flex-col gap-4">
       <header className="flex items-center justify-between">
         <Link
           href={`/?week=${prevWeek}`}
@@ -171,6 +185,7 @@ export default async function CalendarPage({
       >
         오늘 기록 쓰기
       </Link>
-    </main>
+      </main>
+    </div>
   );
 }
