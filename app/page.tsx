@@ -87,7 +87,16 @@ export default async function CalendarPage({
           <ChevronLeft size={18} />
         </Link>
         <h1 className="text-lg font-semibold">
-          {formatMD(days[0])} – {formatMD(days[6])}
+          {days[0].slice(0, 4) === days[6].slice(0, 4) ? (
+            <>
+              {days[0].slice(0, 4)}년 {formatMD(days[0])} – {formatMD(days[6])}
+            </>
+          ) : (
+            <>
+              {days[0].slice(0, 4)}년 {formatMD(days[0])} – {days[6].slice(0, 4)}년{" "}
+              {formatMD(days[6])}
+            </>
+          )}
         </h1>
         <div className="flex items-center gap-1">
           <Link
