@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useRef,
   useState,
   useTransition,
@@ -64,6 +65,8 @@ export function EntryForm({
   initialLines,
   initialExpenses,
   initialPhotos,
+  injectedLine,
+  onInjectedLineConsumed,
 }: {
   date: string;
   initialEntryId: string | null;
@@ -72,6 +75,8 @@ export function EntryForm({
   initialLines: { content: string; tag: Tag }[];
   initialExpenses: { content: string; amount: string }[];
   initialPhotos: Photo[];
+  injectedLine?: { content: string; nonce: number } | null;
+  onInjectedLineConsumed?: () => void;
 }) {
   const router = useRouter();
   const [entryId, setEntryId] = useState(initialEntryId);
@@ -115,6 +120,23 @@ export function EntryForm({
     });
     requestAnimationFrame(() => lineRefs.current[newLine.id]?.focus());
   }
+
+  function appendLine(content: string) {
+    setLines((prev) => {
+      if (prev.length === 1 && prev[0].content === "") {
+        return [{ id: newId(), content, tag: null }];
+      }
+      return [...prev, { id: newId(), content, tag: null }];
+    });
+  }
+
+  useEffect(() => {
+    if (injectedLine) {
+      appendLine(injectedLine.content);
+      onInjectedLineConsumed?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [injectedLine]);
 
   function removeLine(id: string) {
     setLines((prev) => {

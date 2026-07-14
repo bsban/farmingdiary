@@ -13,9 +13,11 @@ interface Todo {
 export function TodoList({
   initialTodos,
   className = "",
+  onComplete,
 }: {
   initialTodos: Todo[];
   className?: string;
+  onComplete?: (content: string) => void;
 }) {
   const [todos, setTodos] = useState(initialTodos);
   const [text, setText] = useState("");
@@ -40,7 +42,15 @@ export function TodoList({
     });
   }
 
-  function handleToggle(id: string, done: boolean) {
+  function handleToggle(id: string, done: boolean, content: string) {
+    if (done && onComplete) {
+      setTodos((prev) => prev.filter((t) => t.id !== id));
+      onComplete(content);
+      startTransition(async () => {
+        await deleteTodo(id);
+      });
+      return;
+    }
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, done } : t)));
     startTransition(async () => {
       await toggleTodo(id, done);
@@ -78,7 +88,7 @@ export function TodoList({
             <input
               type="checkbox"
               checked={todo.done}
-              onChange={(e) => handleToggle(todo.id, e.target.checked)}
+              onChange={(e) => handleToggle(todo.id, e.target.checked, todo.content)}
               className="accent-primary-600"
             />
             <span
