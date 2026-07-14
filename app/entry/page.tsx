@@ -1,17 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
+import { todayKST } from "@/lib/dates";
 import { EntryForm } from "./entry-form";
 import type { Tag, WeatherValue } from "./actions";
-
-function todayKST(): string {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date());
-  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
-  return `${map.year}-${map.month}-${map.day}`;
-}
 
 export default async function EntryPage({
   searchParams,

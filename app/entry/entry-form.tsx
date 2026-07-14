@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { todayKST, shiftDate } from "@/lib/dates";
 import { saveEntry, type Tag, type WeatherValue } from "./actions";
 
 interface Line {
@@ -44,24 +45,6 @@ interface Photo {
 
 function newId() {
   return crypto.randomUUID();
-}
-
-function todayKST(): string {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date());
-  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
-  return `${map.year}-${map.month}-${map.day}`;
-}
-
-function shiftDate(dateStr: string, delta: number): string {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  const dt = new Date(Date.UTC(y, m - 1, d));
-  dt.setUTCDate(dt.getUTCDate() + delta);
-  return dt.toISOString().slice(0, 10);
 }
 
 const WEATHER_OPTIONS: { value: NonNullable<WeatherValue>; Icon: typeof Sun }[] = [

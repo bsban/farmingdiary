@@ -1,44 +1,10 @@
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Sprout, Wheat, Receipt } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, Sprout, Wheat, Receipt } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { todayKST, toISODate, addDays, parseISODate, startOfWeek, formatMD } from "@/lib/dates";
 import { TodoList } from "./todo-list";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
-
-function todayKST(): string {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date());
-  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
-  return `${map.year}-${map.month}-${map.day}`;
-}
-
-function toISODate(utcMs: number): string {
-  return new Date(utcMs).toISOString().slice(0, 10);
-}
-
-function addDays(utcMs: number, days: number): number {
-  return utcMs + days * 86400000;
-}
-
-function parseISODate(dateStr: string): number {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  return Date.UTC(y, m - 1, d);
-}
-
-function startOfWeek(dateStr: string): string {
-  const t = parseISODate(dateStr);
-  const dow = new Date(t).getUTCDay();
-  return toISODate(addDays(t, -dow));
-}
-
-function formatMD(dateStr: string): string {
-  const [, m, d] = dateStr.split("-");
-  return `${Number(m)}/${Number(d)}`;
-}
 
 interface WorkItem {
   content: string;
@@ -123,13 +89,22 @@ export default async function CalendarPage({
         <h1 className="text-lg font-semibold">
           {formatMD(days[0])} – {formatMD(days[6])}
         </h1>
-        <Link
-          href={`/?week=${nextWeek}`}
-          aria-label="다음 주"
-          className="rounded p-1.5 text-neutral-500 hover:bg-neutral-100"
-        >
-          <ChevronRight size={18} />
-        </Link>
+        <div className="flex items-center gap-1">
+          <Link
+            href={`/?week=${nextWeek}`}
+            aria-label="다음 주"
+            className="rounded p-1.5 text-neutral-500 hover:bg-neutral-100"
+          >
+            <ChevronRight size={18} />
+          </Link>
+          <Link
+            href="/search"
+            aria-label="검색"
+            className="rounded p-1.5 text-neutral-500 hover:bg-neutral-100"
+          >
+            <Search size={18} />
+          </Link>
+        </div>
       </header>
 
       <div className="flex flex-col gap-2">
