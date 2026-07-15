@@ -24,13 +24,22 @@
 - [x] `expenses`(비용 기록: entry_id, 내용, 금액) 테이블 설계
 - [x] 마이그레이션 파일 작성 (`supabase/migrations/20260711013000_init_schema.sql`, RLS 포함)
 - [ ] 마이그레이션 적용 — **사용자 액션 필요** (아래 참고)
-- [x] 개인용 1계정 로그인 인프라 적용 (Supabase 매직 링크: `app/login`, `app/auth/callback`, `proxy.ts` 세션 검사)
+- [x] 개인용 1계정 로그인 인프라 적용 (`app/login`, `proxy.ts` 세션 검사)
 
 ### 남은 사용자 액션
 
 1. **마이그레이션 적용**: Supabase 대시보드 → SQL Editor → `supabase/migrations/20260711013000_init_schema.sql` 내용을 붙여넣고 Run.
    (또는 `supabase login` 후 `supabase link --project-ref uryrechhojujgjdtjeoj` → `supabase db push`.)
-2. 적용 후 `/login`에서 본인 이메일로 매직 링크를 받아 첫 로그인 — 이 계정이 앞으로의 유일한 데이터 소유자(`user_id`)가 됩니다.
+2. 적용 후 `/login`에서 이메일 + 비밀번호로 로그인 — 이 계정이 앞으로의 유일한 데이터 소유자(`user_id`)가 됩니다.
+
+### 로그인 방식 변경 (2026-07-15)
+
+처음엔 이메일 매직 링크(비밀번호 없이 로그인 링크만 받는 방식)로 구현했으나, Supabase 기본 이메일 발송의 rate limit(시간당 발송 한도)에 자주 걸려 실사용에 불편해서 **이메일 + 비밀번호 로그인**으로 변경했습니다.
+
+- `app/login/page.tsx` — 이메일/비밀번호 입력 → `signInWithPassword`
+- `app/auth/callback/route.ts` 삭제 (매직 링크 코드 교환용이었음, 더 이상 불필요)
+- 비밀번호는 Supabase 관리자 API로 기존 계정에 직접 설정 (회원가입 화면은 만들지 않음 — 개인용 1계정이라 불필요)
+- 비밀번호를 잊으면 Supabase 대시보드 → Authentication → Users에서 재설정 가능
 
 ## Phase 2 — 오늘 기록 작성 화면 (MVP 핵심)
 
