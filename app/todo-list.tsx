@@ -84,15 +84,15 @@ export function TodoList({
       </form>
       <ul className="flex flex-col gap-1">
         {todos.map((todo) => (
-          <li key={todo.id} className="flex items-center gap-2 text-sm">
+          <li key={todo.id} className="flex min-w-0 items-start gap-2 text-sm">
             <input
               type="checkbox"
               checked={todo.done}
               onChange={(e) => handleToggle(todo.id, e.target.checked, todo.content)}
-              className="accent-primary-600"
+              className="mt-1 shrink-0 accent-primary-600"
             />
             <span
-              className={`flex-1 ${todo.done ? "text-neutral-300 line-through" : "text-neutral-700"}`}
+              className={`min-w-0 flex-1 break-words ${todo.done ? "text-neutral-300 line-through" : "text-neutral-700"}`}
             >
               {todo.content}
             </span>
@@ -100,7 +100,7 @@ export function TodoList({
               type="button"
               onClick={() => handleDelete(todo.id)}
               aria-label="삭제"
-              className="text-neutral-300 hover:text-neutral-500"
+              className="mt-0.5 shrink-0 text-neutral-300 hover:text-neutral-500"
             >
               <X size={13} />
             </button>

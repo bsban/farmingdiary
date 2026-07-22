@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { todayKST, shiftDate } from "@/lib/dates";
-import { saveEntry, type Tag, type WeatherValue } from "./actions";
+import { saveEntry, type Tag, type WeatherOption, type WeatherValue } from "./actions";
 
 interface Line {
   id: string;
@@ -50,7 +50,7 @@ function newId() {
   return crypto.randomUUID();
 }
 
-const WEATHER_OPTIONS: { value: NonNullable<WeatherValue>; Icon: typeof Sun }[] = [
+const WEATHER_OPTIONS: { value: WeatherOption; Icon: typeof Sun }[] = [
   { value: "맑음", Icon: Sun },
   { value: "흐림", Icon: Cloud },
   { value: "비", Icon: CloudRain },
@@ -101,6 +101,12 @@ export function EntryForm({
 
   const lineRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  function toggleWeather(value: WeatherOption) {
+    setWeather((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    );
+  }
 
   function goToDate(newDate: string) {
     router.push(newDate === todayKST() ? "/entry" : `/entry?date=${newDate}`);
@@ -196,7 +202,12 @@ export function EntryForm({
     const { data, error } = await supabase
       .from("entries")
       .upsert(
-        { user_id: user.id, entry_date: date, weather, note: note.trim() || null },
+        {
+          user_id: user.id,
+          entry_date: date,
+          weather: weather.length > 0 ? weather : null,
+          note: note.trim() || null,
+        },
         { onConflict: "user_id,entry_date" },
       )
       .select("id")
@@ -317,9 +328,10 @@ export function EntryForm({
           <button
             key={value}
             type="button"
-            onClick={() => setWeather(weather === value ? null : value)}
+            onClick={() => toggleWeather(value)}
+            aria-pressed={weather.includes(value)}
             className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm ${
-              weather === value
+              weather.includes(value)
                 ? "border-primary-600 bg-primary-600 text-white"
                 : "border-neutral-200 text-neutral-500"
             }`}
@@ -351,24 +363,28 @@ export function EntryForm({
             <button
               type="button"
               onClick={() => toggleTag(line.id, "sow")}
+              aria-label="파종"
+              aria-pressed={line.tag === "sow"}
               className={`flex items-center gap-1 rounded border px-2 py-0.5 text-xs whitespace-nowrap ${
                 line.tag === "sow"
                   ? "border-primary-600 bg-primary-50 text-primary-700"
                   : "border-neutral-200 text-neutral-400"
               }`}
             >
-              <Sprout size={13} /> 파종
+              <Sprout size={13} /> <span className="hidden sm:inline">파종</span>
             </button>
             <button
               type="button"
               onClick={() => toggleTag(line.id, "harvest")}
+              aria-label="수확"
+              aria-pressed={line.tag === "harvest"}
               className={`flex items-center gap-1 rounded border px-2 py-0.5 text-xs whitespace-nowrap ${
                 line.tag === "harvest"
                   ? "border-harvest bg-harvest/10 text-harvest"
                   : "border-neutral-200 text-neutral-400"
               }`}
             >
-              <Wheat size={13} /> 수확
+              <Wheat size={13} /> <span className="hidden sm:inline">수확</span>
             </button>
           </div>
         ))}

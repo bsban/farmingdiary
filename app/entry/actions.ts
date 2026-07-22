@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export type WeatherValue = "맑음" | "흐림" | "비" | "눈" | null;
+export type WeatherOption = "맑음" | "흐림" | "비" | "눈";
+export type WeatherValue = WeatherOption[];
 export type Tag = "sow" | "harvest" | null;
 
 export interface SaveEntryInput {
@@ -37,7 +38,7 @@ export async function saveEntry(input: SaveEntryInput) {
       {
         user_id: user.id,
         entry_date: input.date,
-        weather: input.weather,
+        weather: input.weather.length > 0 ? input.weather : null,
         note: input.note.trim() || null,
       },
       { onConflict: "user_id,entry_date" },

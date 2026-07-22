@@ -45,7 +45,7 @@ export default async function CalendarPage({
 
   const byDate = new Map<
     string,
-    { weather: string | null; note: string | null; items: WorkItem[]; expenses: Expense[] }
+    { weather: string[] | null; note: string | null; items: WorkItem[]; expenses: Expense[] }
   >();
 
   for (const entry of entries ?? []) {
@@ -58,7 +58,7 @@ export default async function CalendarPage({
       amount: e.amount as number,
     }));
     byDate.set(entry.entry_date as string, {
-      weather: entry.weather as string | null,
+      weather: entry.weather as string[] | null,
       note: entry.note as string | null,
       items,
       expenses,
@@ -129,32 +129,38 @@ export default async function CalendarPage({
                 date === today ? "border-primary-500 ring-1 ring-primary-500" : "border-neutral-200"
               }`}
             >
-              <div className="flex items-center gap-2 text-sm font-medium text-neutral-900">
+              <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-neutral-900">
                 <span className="tabular-nums">{formatMD(date)}</span>
                 <span className="text-neutral-400">({WEEKDAYS[i]})</span>
-                {record?.weather && <span className="text-neutral-400">· {record.weather}</span>}
+                {record?.weather && record.weather.length > 0 && (
+                  <span className="min-w-0 break-words text-neutral-400">
+                    · {record.weather.join(", ")}
+                  </span>
+                )}
               </div>
 
               {hasContent && (
-                <div className="flex flex-col gap-1">
+                <div className="flex min-w-0 flex-col gap-1">
                   {record!.items.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-1.5 text-sm text-neutral-700">
+                    <div key={idx} className="flex min-w-0 items-start gap-1.5 text-sm text-neutral-700">
                       <span className="text-neutral-300">·</span>
-                      <span>{item.content}</span>
-                      {item.tag === "sow" && <Sprout size={13} className="text-sow" />}
-                      {item.tag === "harvest" && <Wheat size={13} className="text-harvest" />}
+                      <span className="min-w-0 flex-1 break-words">{item.content}</span>
+                      {item.tag === "sow" && <Sprout size={13} className="mt-0.5 shrink-0 text-sow" />}
+                      {item.tag === "harvest" && (
+                        <Wheat size={13} className="mt-0.5 shrink-0 text-harvest" />
+                      )}
                     </div>
                   ))}
                   {record!.expenses.map((expense, idx) => (
-                    <div key={idx} className="flex items-center gap-1.5 text-sm text-cost">
-                      <Receipt size={13} />
-                      <span>
+                    <div key={idx} className="flex min-w-0 items-start gap-1.5 text-sm text-cost">
+                      <Receipt size={13} className="mt-0.5 shrink-0" />
+                      <span className="min-w-0 flex-1 break-words">
                         {expense.content} · {expense.amount.toLocaleString()}원
                       </span>
                     </div>
                   ))}
                   {record!.note && (
-                    <p className="text-sm text-neutral-500">{record!.note}</p>
+                    <p className="min-w-0 break-words text-sm text-neutral-500">{record!.note}</p>
                   )}
                 </div>
               )}

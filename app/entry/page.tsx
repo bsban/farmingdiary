@@ -55,7 +55,7 @@ export default async function EntryPage({
     <EntryScreen
       date={targetDate}
       initialEntryId={(entry?.id as string) ?? null}
-      initialWeather={(entry?.weather as WeatherValue) ?? null}
+      initialWeather={(entry?.weather as WeatherValue) ?? []}
       initialNote={(entry?.note as string) ?? ""}
       initialLines={initialLines}
       initialExpenses={initialExpenses}
